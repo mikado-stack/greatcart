@@ -8,6 +8,8 @@ import json
 from store.models import Product
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
+from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 
 
 def payments(request):
@@ -77,7 +79,7 @@ def payments(request):
 def place_order(request, total=0, quantity=0,):
     current_user = request.user
 
-    # If the cart count is less than or equal to 0, then redirect back to shop
+   # If the cart count is less than or equal to 0, then redirect back to shop
     cart_items = CartItem.objects.filter(user=current_user)
     cart_count = cart_items.count()
     if cart_count <= 0:
@@ -89,7 +91,7 @@ def place_order(request, total=0, quantity=0,):
         total += (cart_item.product.price * cart_item.quantity)
         quantity += cart_item.quantity
     tax = (2 * total)/100
-    grand_total = total + tax
+    grand_total = total + tax 
 
     if request.method == 'POST':
         form = OrderForm(request.POST)
@@ -129,7 +131,7 @@ def place_order(request, total=0, quantity=0,):
                 'tax': tax,
                 'grand_total': grand_total,
             }
-            return render(request, 'orders/payments.html', context)
+            return render(request, 'orders/payment1.html', context)
     else:
         return redirect('checkout')
 
@@ -159,3 +161,55 @@ def order_complete(request):
         return render(request, 'orders/order_complete.html', context)
     except (Payment.DoesNotExist, Order.DoesNotExist):
         return redirect('home')
+    
+def initiate_payment(request, total=0, quantity=0):
+    current_user = request.user
+
+   # If the cart count is less than or equal to 0, then redirect back to shop
+    cart_items = CartItem.objects.filter(user=current_user)
+    cart_count = cart_items.count()
+    if cart_count <= 0:
+        return redirect('store')
+
+    grand_total = 0
+    tax = 0
+    for cart_item in cart_items:
+        total += (cart_item.product.price * cart_item.quantity)
+        quantity += cart_item.quantity
+    tax = (2 * total)/100
+    grand_total = total + tax 
+
+    if request.method == "POST":
+        amount = grand_total
+        email = request.POST['email']
+
+        pk = settings.PAYSTACK_PUBLIC_KEY
+
+        payment = Payment.objects.create(amount_paid=amount, email=email, user=request.user, status='pending approval')
+        payment.save()
+
+        context = {
+            'grand_total':grand_total,
+            'payment': payment,
+            'field_values': request.POST,
+            'paystack_pub_key': pk,
+            'total':total,
+            'amount_value': payment.amount_value(),
+        }
+        return render(request, 'orders/payment2.html', context)
+
+    return render(request, 'payment.html')
+
+
+def verify_payment(request, ref):
+    payment = Payment.objects.get(ref=ref)
+    verified = payment.verify_payment()
+    
+    if verified:
+        payment.is_ordered = True
+        CartItem.objects.filter(user=request.user).delete()
+        print(request.user.username, "payment made successfully")
+        
+        return render(request, "orders/order_complete.html")
+    
+    return render(request, "orders/success.html")

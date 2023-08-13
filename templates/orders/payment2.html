@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+</section>
+<div class="container">
+	<div class="card">
+		<div class="jumbotron">
+				<h5 class="text-success">you are about to make a payment of {<span class="bi bi-currency-naira">N</span> {{grand_total}} } and transaction reference { {{ payment.ref }} }</h5><br>
+				<button onclick="payWithPaystack()" class="btn btn-primary btn-block">Proceed to Payment</button>
+		</div>
+	</div>
+</div>
+
+
+<script>
+	function payWithPaystack() {
+		let currency = "NGN";
+		let plan = "";
+		let ref = "{{ payment.ref }}";
+		let amount = "{{ grand_total }}";
+		let obj = {
+			key: "{{ paystack_pub_key }}",
+			email: "{{ payment.email }}",
+			amount: "{{ amount_value }}",
+			ref: ref,
+			callback: function (response) {
+				window.location.href = "{% url 'verify_payment' payment.ref %}";
+			},
+		};
+		if (Boolean(currency)) {
+			obj.currency = currency.toUpperCase();
+		}
+		if (Boolean(plan)) {
+			obj.plan - plan;
+		}
+
+		var handler = PaystackPop.setup(obj);
+		handler.openIframe();
+	}
+</script>
+{% endblock content %}

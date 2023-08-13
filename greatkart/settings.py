@@ -14,14 +14,14 @@ from pathlib import Path
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = 'sk_test_ad32e7a2051606a4b8942050be67254b35bebbfa'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool) # True
@@ -151,26 +151,16 @@ MESSAGE_TAGS = {
 }
 
 
+
 # SMTP configuration
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-MAIL_HOST= 'smtp.gmail.com'
-EMAIL_PORT= '587'
-EMAIL_HOST_USER= 'testmikado312@gmail.com'
-EMAIL_HOST_PASSWORD= 'plawzlxopccoblds'
-EMAIL_USE_TLS= True
-
-
-
-PAYSTACK_SECRET_KEY = "sk_test_ad32e7a2051606a4b8942050be67254b35bebbfa"
-PAYSTACK_PUBLIC_KEY = "pk_test_03a72c7ba8ab3eb54c2e2cac29adf420377d9b63"
+EMAIL_HOST='sandbox.smtp.mailtrap.io'
+EMAIL_HOST_USER='93ce61eca8420b'
+EMAIL_HOST_PASSWORD='b96ee853dbfdbd'
+EMAIL_PORT='2525'
 
 
 
 
-EMAIL_HOST = config('EMAIL_HOST')
-EMAIL_PORT = config('EMAIL_PORT', cast=int)
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
+PAYSTACK_SECRET_KEY="sk_test_ad32e7a2051606a4b8942050be67254b35bebbfa"
+PAYSTACK_PUBLIC_KEY="pk_test_03a72c7ba8ab3eb54c2e2cac29adf420377d9b63"
 
-EMAIL_HOST_PASSWORD= 'gdydyjpkoskrzdfd'
