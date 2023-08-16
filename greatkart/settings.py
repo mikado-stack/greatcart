@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'sk_test_ad32e7a2051606a4b8942050be67254b35bebbfa'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool) # True
@@ -92,12 +92,12 @@ AUTH_USER_MODEL = 'accounts.Account'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
-        'USER':'postgres',
-        'PASSWORD':'uuT8G7BIQJApQCStxXA1',
-        'HOST':'containers-us-west-161.railway.app',
-        'PORT':'7535',
+        'ENGINE': config('ENGINE'),
+        'NAME': config('NAME'),
+        'USER':config('USER'),
+        'PASSWORD': config('PASSWORD'),
+        'HOST':config('HOST'),
+        'PORT': config('PORT'),
     }
 }
 
@@ -157,14 +157,14 @@ MESSAGE_TAGS = {
 
 
 # SMTP configuration
-EMAIL_HOST='sandbox.smtp.mailtrap.io'
-EMAIL_HOST_USER=''
-EMAIL_HOST_PASSWORD=''
-EMAIL_PORT=''
+EMAIL_HOST= config('EMAIL_HOST')
+EMAIL_HOST_USER= config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD= config('EMAIL_HOST_PASSWORD')
+EMAIL_PORT=config('EMAIL_PORT')
 
 
 
 
-PAYSTACK_SECRET_KEY=""
-PAYSTACK_PUBLIC_KEY=""
+PAYSTACK_SECRET_KEY= config('PAYSTACK_SECRET_KEY')
+PAYSTACK_PUBLIC_KEY= config('PAYSTACK_PUBLIC_KEY')
 
